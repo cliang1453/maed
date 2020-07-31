@@ -14,9 +14,7 @@ ___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver with use
 
 ## Introduction
 
-The current approaches formulate mAED problem as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for new customized algorithms with three key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints; 3) It provides additional functions such as visualizing the optimal decision maps. 
-
-# We also provide tutorials on the theoretical background and the code. Please see ``tutorial`` folder for tutorials.
+The current approaches formulate mAED problem as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for new customized algorithms with three key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints; 3) It provides additional functions such as visualizing the optimal decision maps. We also provide tutorials on the theoretical background and the code. Please see ``tutorial`` folder for tutorials.
 
 ## Directory structure
 
