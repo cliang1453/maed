@@ -1,8 +1,9 @@
 #' @export
-maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100), D=list(c(0,1,2,3)),
+maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100),
+                 D=list(c(-0.3,-0.1,0.1,0.3)),
                  lambda_0="normal", loss_0=list("default"),
                  lambda_c2="normal", loss_c2=list("default", "default"),
-                 G_size=500, alpha=0.8, J=2, beta=c(0.5,0.5),
+                 G_size=500, alpha=NULL, J=2, beta=NULL,
                  solver="primal", rowgen_mode="direct_sep"){
 
   library(testit)
@@ -21,7 +22,7 @@ maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100), D=
     vars <- maed.p(G, R_sizes)
     P = vars[[1]] # [|G|, |R1|, |R2|]
     G_idx = vars[[2]] #[|G|, n_stage]
-    L <- maed.l(G_idx, D, loss_0) # [1, |G|, |D[1]|, |D[2]|]
+    L <- maed.l(G_idx, D, loss_0, R_sizes) # [1, |G|, |D[1]|, |D[2]|]
 
     # C2 constraints
     if(J > 0){
@@ -29,11 +30,11 @@ maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100), D=
       vars <- maed.p(G_c2, R_sizes)
       P_c2 = vars[[1]] #[|G|, |R1|, |R2|]
       G_c2_idx = vars[[2]] #[|G|, n_stage]
-      L_c2 <- maed.l(G_c2_idx, D, loss_c2) #[J, |G|, |D[1]|, |D[2]|]
+      L_c2 <- maed.l(G_c2_idx, D, loss_c2, R_sizes) #[J, |G|, |D[1]|, |D[2]|]
     }
 
-    ret <- maed.2aed.main(L, P, L_c2, P_c2, alpha, beta, solver,
-                          rowgen_mode, G_size, D, R_sizes, J)
+    maed.2aed.main(L, P, L_c2, P_c2, alpha, beta, solver,
+                  rowgen_mode, G_size, D, R_sizes, J)
   }
 }
 

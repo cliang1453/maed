@@ -1,6 +1,6 @@
 #' @export
 maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
-                           alpha=0.8, beta=c(0.5,0.5), solver="primal",
+                           alpha=NULL, beta=NULL, solver="primal",
                            rowgen_mode="direct_sep",
                            G_size=500, D=NULL, R_sizes=c(100,100), J=NULL){
 
@@ -11,7 +11,7 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
 
   vars <- maed.2aed.construct_param(L, P, L_c2, P_c2, alpha, beta,
                                      G_size, R1_size, R2_size, D1_size, D2_size, J)
-  C <- vars[[1]]
+  c <- vars[[1]]
   A <- vars[[2]]
   b <- vars[[3]]
 
@@ -21,38 +21,36 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
 
   if(solver=="primal"){
     library(PRIMAL)
-    print(dim(A))
-    print(dim(b))
 
-    b_bar = rep(0.1, dim(b)[1])
-    c_bar = rep(0.1, length(C))
-    B_init = seq(dim(b)[1], length(C)-1)
+    m = dim(A)[1]
+    n = dim(A)[2]
 
-    fit.dantzig <- PSM_solver(A, b, b_bar, C, c_bar, B_init, max_it = 50,
-                       lambda_threshold = 0.01)
-    print(fit.dantzig$lambda)
-    ## number of nonzero coefficients for each lambda
-    print(fit.dantzig$df)
-    ## Visualize the solution path
-    plot(fit.dantzig)
+    A = cbind(A,diag(rep(1,m)))
+    c = c(c,rep(0,m))
+    b_bar = rep(1,m)
+    c_bar = rep(0,m+n)
+    B_init = seq(n,n+m-1)
+
+    fit <- PSM_solver(A, b, b_bar, c, c_bar, B_init)
+    print(fit$lambda)
+    print(fit$value)
+
   }else{
-    vars <- maed.2aed.alg(C, A, b, v_0, pi_0, J, rowgen_mode)
+    vars <- maed.2aed.alg(c, A, b, v_0, pi_0, J, rowgen_mode)
+    v <- vars[1]
+    pi <- vars[2]
   }
-  v <- vars[1]
-  pi <- vars[2]
 
-  return(list(v, C %*% v))
 }
 
 #' @export
 maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
-                                      alpha=0.8, beta=c(0.5,0.5),
+                                      alpha=NULL, beta=c(0.5,0.5),
                                       G_size=500, R1_size=100, R2_size=100, D1_size=NULL, D2_size=NULL, J=NULL){
 
   # input:
   # L, L_c2: matrix, [1, |G|, |D[1]|, |D[2]|], [J, |G|, |D[1]|, |D[2]|]
   # P, P_c2: matrix, [|G|, |R1|, |R2|], [|G|, |R1|, |R2|]
-
 
   n <- D1_size*D2_size*R1_size*R2_size
   A_c1 <- rep(rep(P, D1_size), D2_size)
@@ -64,14 +62,14 @@ maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
   P_c2 <- array(P_c2, dim=c(G_size,R1_size*R2_size)) #[G, R1 * R2]
 
 
-  C <- c(L %*% P) #[|R1|*|R2|*|D[1]|*|D[2]|]
+  c <- L %*% P #[|R1|*|R2|*|D[1]|*|D[2]|]
   A_c2 <- L_c2 %*% P_c2 # rcpp
   dim(A_c2) <- c(J, n) #[J, |R1|*|R2|*|D[1]|*|D[2]|]
 
   A <- rbind(A_c1, A_c2) #[G_size + J, |R1|*|R2|*|D[1]|*|D[2]|]
-  b <- abind(c(rep(alpha, G_size), beta), along=2) #[G_size + J, 1]
 
-  return(list(C, A, b))
+  b <- abind(c(alpha, beta), along=2) #[G_size + J, 1]
+  return(list(c, A, b))
 }
 
 #' @export
