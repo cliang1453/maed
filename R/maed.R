@@ -20,7 +20,7 @@ maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100),
     P = vars[[1]] # [|G|, |R1|, |R2|]
     G_idx = vars[[2]] #[|G|, n_stage]
     L <- maed.l(G_idx, D, loss_tables_0, R_sizes) # [1, |G|, |D[1]|, |D[2]|]
-    print(dim(L))
+
     # C2 constraints
     if(J > 0){
       G_c2 <- maed.g(lambda_c2, G_size, n_ppl, prop_ppl) #[|G|, n_ppl]
@@ -29,7 +29,6 @@ maed <- function(n_stage=2, n_ppl=2, prop_ppl=c(0.5,0.5), R_sizes=c(100,100),
       G_c2_idx = vars[[2]] #[|G|, n_stage]
       L_c2 <- maed.l(G_c2_idx, D, loss_tables_c2, R_sizes, J) #[J, |G|, |D[1]|, |D[2]|]
     }
-    print(dim(L_c2))
 
     maed.2aed.main(L, P, L_c2, P_c2, alpha, beta, solver,
                   rowgen_mode, G_size, D, R_sizes, J)
