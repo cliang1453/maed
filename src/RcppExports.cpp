@@ -6,20 +6,92 @@
 
 using namespace Rcpp;
 
-// meanC
-double meanC(NumericVector x);
-RcppExport SEXP _maed_meanC(SEXP xSEXP) {
+// compute_l
+Eigen::MatrixXd compute_l(Eigen::VectorXd& L0, List& L1);
+RcppExport SEXP _maed_compute_l(SEXP L0SEXP, SEXP L1SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(meanC(x));
+    Rcpp::traits::input_parameter< Eigen::VectorXd& >::type L0(L0SEXP);
+    Rcpp::traits::input_parameter< List& >::type L1(L1SEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_l(L0, L1));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_p
+List compute_p(IntegerMatrix& idx, IntegerVector& R_sizes, int G_size, int n_stage);
+RcppExport SEXP _maed_compute_p(SEXP idxSEXP, SEXP R_sizesSEXP, SEXP G_sizeSEXP, SEXP n_stageSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerMatrix& >::type idx(idxSEXP);
+    Rcpp::traits::input_parameter< IntegerVector& >::type R_sizes(R_sizesSEXP);
+    Rcpp::traits::input_parameter< int >::type G_size(G_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type n_stage(n_stageSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_p(idx, R_sizes, G_size, n_stage));
+    return rcpp_result_gen;
+END_RCPP
+}
+// grid
+NumericVector grid(NumericVector R_sizes, double w, int n_stage);
+RcppExport SEXP _maed_grid(SEXP R_sizesSEXP, SEXP wSEXP, SEXP n_stageSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type R_sizes(R_sizesSEXP);
+    Rcpp::traits::input_parameter< double >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type n_stage(n_stageSEXP);
+    rcpp_result_gen = Rcpp::wrap(grid(R_sizes, w, n_stage));
+    return rcpp_result_gen;
+END_RCPP
+}
+// floormat
+IntegerMatrix floormat(NumericMatrix G);
+RcppExport SEXP _maed_floormat(SEXP GSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type G(GSEXP);
+    rcpp_result_gen = Rcpp::wrap(floormat(G));
+    return rcpp_result_gen;
+END_RCPP
+}
+// discretize
+IntegerMatrix discretize(NumericMatrix& G, NumericVector& R_sizes, int G_size, double w, int n_pop, int n_stage);
+RcppExport SEXP _maed_discretize(SEXP GSEXP, SEXP R_sizesSEXP, SEXP G_sizeSEXP, SEXP wSEXP, SEXP n_popSEXP, SEXP n_stageSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix& >::type G(GSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type R_sizes(R_sizesSEXP);
+    Rcpp::traits::input_parameter< int >::type G_size(G_sizeSEXP);
+    Rcpp::traits::input_parameter< double >::type w(wSEXP);
+    Rcpp::traits::input_parameter< int >::type n_pop(n_popSEXP);
+    Rcpp::traits::input_parameter< int >::type n_stage(n_stageSEXP);
+    rcpp_result_gen = Rcpp::wrap(discretize(G, R_sizes, G_size, w, n_pop, n_stage));
+    return rcpp_result_gen;
+END_RCPP
+}
+// matmul
+Eigen::MatrixXd matmul(Eigen::MatrixXd& A1, Eigen::MatrixXd& A2);
+RcppExport SEXP _maed_matmul(SEXP A1SEXP, SEXP A2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::MatrixXd& >::type A1(A1SEXP);
+    Rcpp::traits::input_parameter< Eigen::MatrixXd& >::type A2(A2SEXP);
+    rcpp_result_gen = Rcpp::wrap(matmul(A1, A2));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_maed_meanC", (DL_FUNC) &_maed_meanC, 1},
+    {"_maed_compute_l", (DL_FUNC) &_maed_compute_l, 2},
+    {"_maed_compute_p", (DL_FUNC) &_maed_compute_p, 4},
+    {"_maed_grid", (DL_FUNC) &_maed_grid, 3},
+    {"_maed_floormat", (DL_FUNC) &_maed_floormat, 1},
+    {"_maed_discretize", (DL_FUNC) &_maed_discretize, 6},
+    {"_maed_matmul", (DL_FUNC) &_maed_matmul, 2},
     {NULL, NULL, 0}
 };
 

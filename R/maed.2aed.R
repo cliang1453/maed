@@ -62,8 +62,8 @@ maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
   P_c2 <- array(P_c2, dim=c(G_size,R1_size*R2_size)) #[G, R1 * R2]
 
 
-  c <- L %*% P #[|R1|*|R2|*|D[1]|*|D[2]|]
-  A_c2 <- L_c2 %*% P_c2 # rcpp
+  c <- .Call("_maed_matmul", L, P) #[|R1|*|R2|*|D[1]|*|D[2]|]
+  A_c2 <- .Call("_maed_matmul", L_c2, P_c2)
   dim(A_c2) <- c(J, n) #[J, |R1|*|R2|*|D[1]|*|D[2]|]
 
   A <- rbind(A_c1, A_c2) #[G_size + J, |R1|*|R2|*|D[1]|*|D[2]|]
@@ -94,7 +94,6 @@ maed.2aed.construct_variables <- function(R1_size=100, R2_size=100, D1_size=NULL
   return(list(v, pi))
 }
 
-# out <- .Call("_maed_meanC", x)
 #' @useDynLib maed
 #' @importFrom Rcpp sourceCpp
 NULL

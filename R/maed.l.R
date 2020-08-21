@@ -1,41 +1,29 @@
 #' @export
-maed.l <- function(G_idx=NULL, D=NULL, loss=NULL, R_sizes=NULL){
+maed.l <- function(G_idx=NULL, D=NULL, loss_tables=NULL, R_sizes=NULL, J=1){
   library(abind)
 
-  L = list()
-  for (j in 1:length(loss)){
-    L_table <- maed.loss_lookup_table(G_idx, D, loss[j], R_sizes) #[n_stage + 1, ]
-    L_j = L_table[[1]]
-    for(i in 2:length(L_table)){
-      L_j = L_j %o% L_table[[i]]
+  G_size <- dim(G_idx)[1]
+  R1_size <- R_sizes[1]
+  R2_size <- R_sizes[2]
+  D_size <- c(length(D[[1]]), length(D[[2]]))
+  L <- list()
+
+  for (j in 1:J){
+
+    if(is.null(loss_tables)){
+      loss_table <- rnorm(R1_size * R2_size)
+    }else{
+      loss_table <- loss_tables[j] # R1_size * R2_size
     }
-    L[[j]] = L_j
+
+    L0 <- loss_table[G_idx[,1]*R2_size + G_idx[,2] + 1] # G_size
+    Lj <- .Call("_maed_compute_l", L0, D)
+
+    L[[j]] <- array(Lj, dim=c(G_size, D_size))
   }
 
-  L = abind(L, along=0) # [J, |G|, |D[1]|, |D[2]|]
+  L <- abind(L, along=0) # [J, |G|, |D[1]|, |D[2]|]
   return(L)
-
-}
-
-#' @export
-maed.loss_lookup_table <- function(G_idx=NULL, D=NULL, loss="default", R_sizes=NULL){
-
-  L_table = list()
-  n_stage <- length(D)
-  G_size = dim(G_idx)[1]
-  R1_size = R_sizes[1]
-  R2_size = R_sizes[2]
-
-  if(loss == "default"){
-    # two-stage, two-sub-population
-    table = rnorm(R1_size*R2_size)
-    L_table[[1]] = table[G_idx[,1]*R2_size + G_idx[,2]]
-    for(n in 2:n_stage){
-      L_table[[n]] = D[[n-1]]
-    }
-    L_table[[n_stage+1]] = c(-0.3, -0.1, -0.1, -0.1, 0.1, 0.1, 0.1, 0.3)
-  }
-  return(L_table)
 }
 
 #' @useDynLib maed
