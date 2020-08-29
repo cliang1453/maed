@@ -62,7 +62,7 @@ plot(est)
 
 ## References
 
-[1] Pang H, Liu H, Vanderbei R, Zhao T. Parametric simplex method for sparse learning, 2017.
-[2] M. Rosenblum, E. X. Fang, and H. Liu, Optimal, two stage, adaptive enrichment designs for randomized trials, using sparse linear programming, Under minor revision at Journal of Royal Statistical Society, Series B, 2017.
-[3] D. Eddelbuettel and R. François, “Rcpp: Seamless R and C++ integration,” Journal of Statistical Software, vol. 40, no. 8, pp. 1–18, 2011.
-[4] Guennebaud, G., Jacob, B. et al.(2010).  Eigen v3.  http://eigen.tuxfamily.org.
+[1] Pang H, Liu H, Vanderbei R, Zhao T. Parametric simplex method for sparse learning, 2017.  
+[2] M. Rosenblum, E. X. Fang, and H. Liu, Optimal, two stage, adaptive enrichment designs for randomized trials, using sparse linear programming, Under minor revision at Journal of Royal Statistical Society, Series B, 2017.  
+[3] D. Eddelbuettel and R. François, “Rcpp: Seamless R and C++ integration,” Journal of Statistical Software, vol. 40, no. 8, pp. 1–18, 2011.  
+[4] Guennebaud, G., Jacob, B. et al.(2010).  Eigen v3.  http://eigen.tuxfamily.org.  
