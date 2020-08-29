@@ -13,7 +13,7 @@ ___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver for nons
 
 ## Introduction
 
-The current approaches formulate mAED problem as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for new customized algorithms with three key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints. The package currently supports 2-stage 2-subpopulation AED problem using package [PRIMAL](https://github.com/ShenQianli/primal)[1]. The package will be in future extended to support multi-stage and multi-sub-population AED problem with subspace optimization and row-generation methods[2]. 
+Multi-stage Adaptive Enrichment Design (mAED) problem is mostly formulated as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for implementation of new customized algorithms with several key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints. This package currently supports the 2-stage 2-subpopulation AED problem (2AED) with support of package [PRIMAL](https://github.com/ShenQianli/primal)[1]. This package will be in future extended to support the general mAED problem with subspace optimization and row-generation methods[2]. 
 
 ## Installation
 
