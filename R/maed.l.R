@@ -1,3 +1,24 @@
+#-------------------------------------------------------------------------------#
+# Package: Multistage Adaptive Enrichment Design                                #
+# maed.l(): The function for loss matrix generation                             #
+#-------------------------------------------------------------------------------#
+
+#' The function perform L matrix generation given the user specified loss values.
+#'
+#' @param G_idx A matrix of discretized indices of size \code{G_size} by \code{n_stage}.
+#' @param D A list of discrete decision values after each stage. Specified by users.
+#' @param loss_tables A loss lookup table with user specified loss under each decision pattern. Table size should agree with with \code{R_sizes}.
+#' @param R_sizes A list of numbers of discretization at each stage. Default to be \code{c(100, 100)}.
+#' @param J Total number of C2 constraints. Specified by users.
+#' @return
+#' An matrix is returned:
+#' \item{L}{
+#'   A loss matrix of size \code{J} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
+#' }
+
+#' @seealso \code{\link{maed}}, \code{\link{maed.g}}, \code{\link{maed.p}}, \code{\link{maed.2aed.main}}, and \code{\link{maed-package}}.
+#' @example
+#'
 #' @export
 maed.l <- function(G_idx=NULL, D=NULL, loss_tables=NULL, R_sizes=NULL, J=1){
   library(abind)

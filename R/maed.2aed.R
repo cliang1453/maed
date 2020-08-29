@@ -1,7 +1,42 @@
+#-------------------------------------------------------------------------------#
+# Package: Multistage Adaptive Enrichment Design                                #
+# maed.2aed.main(): The interface for maed.2aed.construct_param,                #
+#                   maed.2aed.construct_variables, maed.2aed.alg                #
+#-------------------------------------------------------------------------------#
+
+#' The main function for solving the formulated LP for 2-stage, 2-sub-population adaptive enrichment design problem.
+#'
+#' The solver is defaulted to be a pre-exsiting LP library \code{'PRIMAL'}. For high-dimensional & high-sparsity setting, we adopt the sub-space optimization methods and row generation methods. We leave these for future implementation.
+#'
+#' @param L A loss matrix (in the objective) of size \code{1} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
+#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param L_c2 A loss matrix (in the C2 constraints) of size \code{J} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
+#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param alpha C1 constraints values that the user should specify. Its size should agree with G_size.
+#' @param beta C2 constraints values that the user should specify. Its size should agree with J.
+#' @param solver The solver solving the formulated LP problem. Default to be \code{PRIMAL}.
+#' @param G_size Dimension of G and G_c2. Default to be \code{500}.
+#' @param D A list of discrete decision values after each stage. Specified by users.
+#' @param R_sizes A list of numbers of discretization at each stage. Default to be \code{c(100, 100)}.
+#' @param J Total number of C2 constraints that the user should specify.
+#' @return
+#' An object with S3 class \code{"maed.2aed"} is returned:
+#' \item{lambda}{
+#'   The sequence of regularization parameters \code{lambda} obtained in the program.
+#' }
+#' \item{value}{
+#'   The sequence of optimal value of the object function corresponded to the sequence of \code{lambda}.
+#' }
+#' \item{solver}{
+#'   The solver solving the formulated LP problem.
+#' }
+
+#' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
+#' @example
+#'
 #' @export
 maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
                            alpha=NULL, beta=NULL, solver="primal",
-                           rowgen_mode="direct_sep",
                            G_size=500, D=NULL, R_sizes=c(100,100), J=NULL){
 
   R1_size <- R_sizes[1]
@@ -15,11 +50,10 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
   A <- vars[[2]]
   b <- vars[[3]]
 
-  vars <- maed.2aed.construct_variables(R1_size, R2_size, D1_size, D2_size, G_size, J)
-  v_0 <- vars[[1]]
-  pi_0 <- vars[[2]]
+  est = list()
 
   if(solver=="primal"){
+
     library(PRIMAL)
 
     m = dim(A)[1]
@@ -32,17 +66,66 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
     B_init = seq(n,n+m-1)
 
     fit <- PSM_solver(A, b, b_bar, c, c_bar, B_init)
-    print(fit$lambda)
-    print(fit$value)
+
+    est$lambda = fit$lambda
+    est$value = fit$value
+    rm(fit)
 
   }else{
-    vars <- maed.2aed.alg(c, A, b, v_0, pi_0, J, rowgen_mode)
-    v <- vars[1]
-    pi <- vars[2]
+
+    vars <- maed.2aed.construct_variables(R1_size, R2_size, D1_size, D2_size, G_size, J)
+    v_0 <- vars[[1]]
+    pi_0 <- vars[[2]]
+
+    fit <- maed.2aed.alg(c, A, b, v_0, pi_0, J, rowgen_mode="direct_sep")
+
+    est$lambda = fit$lambda
+    est$value = fit$value
+    rm(fit)
+
   }
 
+  est$solver = solver
+  class(est) = "maed.2aed"
+  return(est)
 }
 
+
+#-------------------------------------------------------------------------------#
+# Package: Multistage Adaptive Enrichment Design                                #
+# maed.2aed.construct_param(): construct data and constraint matrices for the   #
+#                              LP problem given the component matrices          #
+#-------------------------------------------------------------------------------#
+
+#' A helper function for construct data and constraint matrices for the LP problem under 2-stage 2-sub-population adaptive enrichment design.
+#'
+#' @param L A loss matrix (in the objective) of size \code{1} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
+#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param L_c2 A loss matrix (in the C2 constraints) of size \code{J} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
+#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param alpha C1 constraints values that the user should specify. Its size should agree with G_size.
+#' @param beta C2 constraints values that the user should specify. Its size should agree with J.
+#' @param G_size Dimension of G and G_c2. Default to be \code{500}.
+#' @param R1_size The number of discretization at first stage. Default to be \code{100}.
+#' @param R2_size The number of discretization at second stage. Default to be \code{100}.
+#' @param D1_size The number of discrete decision values after the first stage. Specified by users.
+#' @param D2_size The number of discrete decision values after the second stage. Specified by users.
+#' @param J Total number of C2 constraints. Specified by users.
+#' @return
+#' A list is returned:
+#' \item{c}{
+#'   The objective vector of length \code{R1_size}x\code{R2_size}x\code{D1_size}x\code{D2_size}.
+#' }
+#' \item{A}{
+#'   The constraint matrix of size \code{G_size+J} by \code{R1_size}x\code{R2_size}x\code{D1_size}x\code{D2_size}.
+#' }
+#' \item{b}{
+#'   The value matrix of length \code{G_size+J}.
+#' }
+
+#' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
+#' @example
+#'
 #' @export
 maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
                                       alpha=NULL, beta=c(0.5,0.5),
@@ -72,6 +155,33 @@ maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
   return(list(c, A, b))
 }
 
+
+#-------------------------------------------------------------------------------#
+# Package: Multistage Adaptive Enrichment Design                                #
+# maed.2aed.construct_variables(): initialize decision variables for sub-space  #
+#                                  optimization and row generation methods      #
+#-------------------------------------------------------------------------------#
+
+#' A helper function for initialize decision variables for the LP problem under 2-stage 2-sub-population adaptive enrichment design.
+#'
+#' @param R1_size The number of discretization at first stage. Default to be \code{100}.
+#' @param R2_size The number of discretization at second stage. Default to be \code{100}.
+#' @param D1_size The number of discrete decision values after the first stage. Specified by users.
+#' @param D2_size The number of discrete decision values after the second stage. Specified by users.
+#' @param G_size Dimension of G and G_c2. Default to be \code{500}.
+#' @param J Total number of C2 constraints. Specified by users.
+#' @return
+#' A list is returned:
+#' \item{v}{
+#'   The decision variable vector of length \code{R1_size}x\code{R2_size}x\code{D1_size}x\code{D2_size}.
+#' }
+#' \item{pi}{
+#'   The decision variable pi of length \code{G_size+J}.
+#' }
+
+#' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
+#' @example
+#'
 #' @export
 maed.2aed.construct_variables <- function(R1_size=100, R2_size=100, D1_size=NULL, D2_size=NULL,
                                           G_size=500, J=NULL){
