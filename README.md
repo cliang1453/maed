@@ -1,7 +1,7 @@
 <h1 align="center">mAED</h1>
 <h4 align="center">R Library for Multi-Stage Adaptive Enrichment Design</h4>
 
-___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver interface for nonsmooth dual problems under highly sparse and structured settings in 2AED problems. The core implementation is based on Eigen3 library, a portable library for high performance linear algebra, and [PRIMAL] package(https://github.com/ShenQianli/primal)[1], a unified framework of parametric simplex methods for sparse learning. 
+___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver interface for nonsmooth dual problems under highly sparse and structured settings in 2AED problems. The core implementation is based on Eigen3 library, a portable library for high performance linear algebra, and [PRIMAL](https://github.com/ShenQianli/primal)[1] package, a unified framework of parametric simplex methods for sparse learning. 
 
 ## Table of contents
 
