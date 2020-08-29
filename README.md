@@ -1,7 +1,7 @@
 <h1 align="center">mAED</h1>
 <h4 align="center">R Library for Multi-Stage Adaptive Enrichment Design</h4>
 
-___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver interface for nonsmooth dual problems under highly sparse and structured settings in mAED problems. The core implementation is based on Eigen3 library[3], a portable C++ library for high performance linear algebra, and [PRIMAL](https://github.com/ShenQianli/primal)[1] package, a unified framework of parametric simplex methods for sparse learning. 
+___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver interface for nonsmooth dual problems under highly sparse and structured settings in mAED problems. The core implementation is based on Eigen3 library[3], a portable C++ library for high performance linear algebra, and [PRIMAL](https://github.com/ShenQianli/primal)[1] package, a unified framework of parametric simplex methods for sparse learning.
 
 ## Table of contents
 
@@ -13,7 +13,7 @@ ___mAED___ (Multi-Stage Adaptive Enrichment Design) implements a solver interfac
 
 ## Introduction
 
-Multi-stage Adaptive Enrichment Design (mAED) problem is mostly formulated as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for implementation of new customized algorithms with several key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints. This package currently supports solving the 2-stage 2-subpopulation AED problem (2AED), with the core optimization engine supported by [PRIMAL](https://github.com/ShenQianli/primal)[1]. This package provides an interface to the LP solver, where the users could specify the 2AED problem settings, e.g., prior distributions, stage settings, subpopulation settings and additional constraints. 
+Multi-stage Adaptive Enrichment Design (mAED) problem is mostly formulated as a general linear programming (LP) problem [2], which is computationally expensive to solve. This library is proposed for implementation of new customized algorithms with several key features: 1) It provides a highly efficient solver to tackle a large and important class of LP problems; 2) It provides a solution for multi-stage decision-making problems with Bayes risk constraints. This package currently supports solving the 2-stage 2-subpopulation AED problem (2AED), with the core optimization engine supported by [PRIMAL](https://github.com/ShenQianli/primal)[1]. This package provides an interface to the core LP solver, where the users could specify the 2AED problem settings, e.g., prior distributions, stage settings, subpopulation settings and additional constraints. The interface formulates the LP problem based on the user specified problem settings, and is based on the Eigen3 library[3]. 
 
 ## Installation
 
