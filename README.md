@@ -56,8 +56,8 @@ est = maed(n_stage=n_stage, n_ppl=n_ppl, prop_ppl=prop_ppl,
 # Visualize the solution path  
 plot(est)
 ```
-## What's Next
-- This package will be in future extended to support solving the general Multi-stage AED (mAED) problem with more advanced methods including row generation and subspace optimization, and will be released through CRAN.
+## What's next
+- This package will be in future extended to support solving the general Multi-stage AED (mAED) problem with more advanced methods including row generation and subspace optimization[2], and will be released through CRAN.
 - This package will be in future support the visualization of the optimal decision map.
 
 ## References
