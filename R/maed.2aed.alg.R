@@ -18,8 +18,6 @@
 #' An object with S3 class \code{"maed.2aed.fitwrapper"} is returned.
 
 #' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
-#' @example
-#'
 #' @export
 maed.2aed.alg <- function(C=NULL, A=NULL, b=NULL, v_0=NULL, pi_0=NULL, J=NULL,
                           T_max=1000, rowgen_mode="direct_sep"){

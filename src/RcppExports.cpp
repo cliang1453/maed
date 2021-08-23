@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // compute_l
 Eigen::MatrixXd compute_l(Eigen::VectorXd& L0, List& L1);
 RcppExport SEXP _maed_compute_l(SEXP L0SEXP, SEXP L1SEXP) {

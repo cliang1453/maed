@@ -9,15 +9,15 @@
 #' The solver is defaulted to be a pre-exsiting LP library \code{'PRIMAL'}. For high-dimensional & high-sparsity setting, we adopt the sub-space optimization methods and row generation methods. We leave these for future implementation.
 #'
 #' @param L A loss matrix (in the objective) of size \code{1} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
-#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{state_dim[1]} by ... by \code{state_dim[-1]}.
 #' @param L_c2 A loss matrix (in the C2 constraints) of size \code{J} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
-#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{state_dim[1]} by ... by \code{state_dim[-1]}.
 #' @param alpha C1 constraints values that the user should specify. Its size should agree with G_size.
 #' @param beta C2 constraints values that the user should specify. Its size should agree with J.
 #' @param solver The solver solving the formulated LP problem. Default to be \code{PRIMAL}.
 #' @param G_size Dimension of G and G_c2. Default to be \code{500}.
-#' @param D A list of discrete decision values after each stage. Specified by users.
-#' @param R_sizes A list of numbers of discretization at each stage. Default to be \code{c(100, 100)}.
+#' @param reward A list of discrete decision values after each stage. Specified by users.
+#' @param state_dim A list of numbers of discretization at each stage. Default to be \code{c(100, 100)}.
 #' @param J Total number of C2 constraints that the user should specify.
 #' @return
 #' An object with S3 class \code{"maed.2aed"} is returned:
@@ -32,21 +32,19 @@
 #' }
 
 #' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
-#' @example
-#'
 #' @export
 maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
                            alpha=NULL, beta=NULL, solver="primal",
-                           G_size=500, D=NULL, R_sizes=c(100,100), J=NULL){
+                           G_size=500, reward=NULL, state_dim=c(100,100), J=NULL){
 
-  R1_size <- R_sizes[1]
-  R2_size <- R_sizes[2]
-  D1_size <- length(D[[1]])
-  D2_size <- length(D[[2]])
+  R1_size <- state_dim[1]
+  R2_size <- state_dim[2]
+  D1_size <- length(reward[[1]])
+  D2_size <- length(reward[[2]])
 
   vars <- maed.2aed.construct_param(L, P, L_c2, P_c2, alpha, beta,
                                      G_size, R1_size, R2_size, D1_size, D2_size, J)
-  c <- vars[[1]]
+  c <- -1 * vars[[1]]
   A <- vars[[2]]
   b <- vars[[3]]
 
@@ -100,9 +98,9 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
 #' A helper function for construct data and constraint matrices for the LP problem under 2-stage 2-sub-population adaptive enrichment design.
 #'
 #' @param L A loss matrix (in the objective) of size \code{1} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
-#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param P A probability matrix (in the objective) of size \code{G_size} by \code{state_dim[1]} by ... by \code{state_dim[-1]}.
 #' @param L_c2 A loss matrix (in the C2 constraints) of size \code{J} by \code{G_size} by \code{D[1]} by ... by \code{D[-1]}.
-#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{R_sizes[1]} by ... by \code{R_sizes[-1]}.
+#' @param P_c2 A probability matrix (in the C2 constraints) of size \code{G_size} by \code{state_dim[1]} by ... by \code{state_dim[-1]}.
 #' @param alpha C1 constraints values that the user should specify. Its size should agree with G_size.
 #' @param beta C2 constraints values that the user should specify. Its size should agree with J.
 #' @param G_size Dimension of G and G_c2. Default to be \code{500}.
@@ -124,8 +122,6 @@ maed.2aed.main <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
 #' }
 
 #' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
-#' @example
-#'
 #' @export
 maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
                                       alpha=NULL, beta=c(0.5,0.5),
@@ -180,8 +176,6 @@ maed.2aed.construct_param <- function(L=NULL, P=NULL, L_c2=NULL, P_c2=NULL,
 #' }
 
 #' @seealso \code{\link{maed.p}}, \code{\link{maed.l}}, \code{\link{maed.g}}, and \code{\link{maed-package}}.
-#' @example
-#'
 #' @export
 maed.2aed.construct_variables <- function(R1_size=100, R2_size=100, D1_size=NULL, D2_size=NULL,
                                           G_size=500, J=NULL){

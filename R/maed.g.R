@@ -18,8 +18,6 @@
 
 #' @seealso \code{\link{maed}}, \code{\link{maed.l}}, \code{\link{maed.p}}, \code{\link{maed.2aed.main}}, and \code{\link{maed-package}}.
 #' @example
-#'
-#' @export
 maed.g <- function(lambda=NULL, G_size=500, n_ppl=2, prop_ppl=c(0.5, 0.5)){
 
   library(pracma)
