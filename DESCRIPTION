@@ -2,7 +2,7 @@ Package: maed
 Type: Package
 Title: Multi-stage Adaptive Enrichment Design
 Version: 0.1.0
-Author: Chen Liang, Minshuo Chen, Ethan X. Fang, and Tuo Zhao
+Author: Minshuo Chen, Chen Liang, Ethan X. Fang, and Tuo Zhao
 Maintainer: Chen Liang <cliang73@gatech.edu>
 Depends: R (>= 3.0.0)
 Imports:
